@@ -1,0 +1,22 @@
+[project]
+name = "jmrec-cli"
+version = "0.1.0"
+description = "A collection of personal utilities for daily work"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "typer",
+    "img2pdf",
+    "pypdf"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+jmrec-cli = "jmrec.main:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = {find = {where = ["src"]}}
