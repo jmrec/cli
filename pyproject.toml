@@ -7,8 +7,31 @@ requires-python = ">=3.12"
 dependencies = [
     "typer",
     "img2pdf",
-    "pypdf"
+    "pypdf",
+    "tablib",
+    "pypandoc"
 ]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pre-commit",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
