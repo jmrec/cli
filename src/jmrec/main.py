@@ -1,6 +1,5 @@
 import subprocess
 import typer
-import typer
 from pathlib import Path
 from typing import List
 import img2pdf
