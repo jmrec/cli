@@ -1,6 +1,7 @@
 services:
   jmrec-cli:
     build: .
+    image: jmrec-cli
     volumes:
       - .:/app
       - /Users:/Users
