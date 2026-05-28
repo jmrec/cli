@@ -5,6 +5,9 @@ from typing import Iterable, List
 import pypandoc
 import tablib
 import typer
+from rich.table import Table
+
+from jmrec.utils import console
 
 app = typer.Typer()
 
@@ -38,9 +41,7 @@ def doc2md(
 
 @app.command()
 def csv2json(
-    inputs: List[Path] = typer.Argument(
-        ..., help="CSV files or directories containing CSVs."
-    ),
+    inputs: List[Path] = typer.Argument(..., help="CSV files or directories containing CSVs."),
 ):
     """
     Convert CSV files to minified JSON using tablib.
@@ -57,26 +58,50 @@ def csv2json(
         typer.secho("❌ No valid CSV files found.", fg=typer.colors.RED)
         raise typer.Exit(1)
 
+    table = Table(title="Conversion Summary", show_header=True, header_style="bold magenta")
+    table.add_column("File Name", style="dim")
+    table.add_column("Status", justify="right")
+    table.add_column("Size Change", justify="right")
     with typer.progressbar(files_to_process, label="Processing") as progress:
         progress: Iterable[Path]
 
         for csv_path in progress:
+            # try:
             try:
                 with open(csv_path, "r", encoding="utf-8-sig") as f:
                     data = tablib.Dataset().load(f.read(), format="csv")
-
-                with open(csv_path.with_suffix(".json"), "w", encoding="utf-8") as f:
-                    json.dump(data.dict, f, separators=(",", ":"))
-
             except Exception as e:
-                typer.secho(f"\n❌ Error in {csv_path.name}: {e}", fg=typer.colors.RED)
+                typer.secho(
+                    f"❌ Error reading {csv_path.name}: {type(e).__name__}: {e}",
+                    fg=typer.colors.RED,
+                    err=True,
+                )
+                continue
 
-    typer.secho(
-        f"\n✅ Done! Processed {len(files_to_process)} files.",
-        fg=typer.colors.GREEN,
-        bold=True,
-    )
+            try:
+                json_obj = json.loads(data.export("json"))
+                with open(csv_path.with_suffix(".json"), "w", encoding="utf-8") as f:
+                    json.dump(json_obj, f, separators=(",", ":"))
+            except Exception as e:
+                typer.secho(
+                    f"❌ Error writing {csv_path.name}: {type(e).__name__}: {e}",
+                    fg=typer.colors.RED,
+                    err=True,
+                )
+                continue
 
+            orig_size = csv_path.stat().st_size
+            new_size = csv_path.with_suffix(".json").stat().st_size
+            diff = (new_size / orig_size) * 100
 
-if __name__ == "__main__":
-    app()
+            table.add_row(csv_path.name, "[success]SUCCESS[/success]", f"{diff:.1f}%")
+            # except Exception as e:
+            # table.add_row(csv_path.name, f"[error]FAILED[/error]", str(e))
+            # typer.secho(f"\nError in {csv_path.name}: {e}", fg=typer.colors.RED)
+
+    # typer.secho(
+    #     f"\n✅ Done! Processed {len(files_to_process)} files.",
+    #     fg=typer.colors.GREEN,
+    #     bold=True,
+    # )
+    console.print(table)

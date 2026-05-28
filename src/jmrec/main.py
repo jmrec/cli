@@ -1,17 +1,19 @@
 import io
-import subprocess
 from pathlib import Path
 from typing import List
 
 import img2pdf
 import typer
 from pypdf import PdfWriter
+from rich.traceback import install
 
-from jmrec.commands import convert, greet
+from jmrec.commands import canvas, convert, greet
 
+install(show_locals=True)
 app = typer.Typer()
 app.add_typer(greet.app, name="greet", help="Commands related to greetings")
 app.add_typer(convert.app, name="convert", help="Commands related to conversion")
+app.add_typer(canvas.app, name="canvas", help="Commands related to Canvas LMS")
 
 
 @app.command()
@@ -34,9 +36,7 @@ def merge(
     with typer.progressbar(inputs, label="Processing files") as progress:
         for path in progress:
             if not path.exists():
-                typer.secho(
-                    f"⚠️ Skipping: {path} (File not found)", fg=typer.colors.YELLOW
-                )
+                typer.secho(f"⚠️ Skipping: {path} (File not found)", fg=typer.colors.YELLOW)
                 continue
 
             ext = path.suffix.lower()
@@ -60,16 +60,12 @@ def merge(
                         fg=typer.colors.YELLOW,
                     )
             except Exception as e:
-                typer.secho(
-                    f"❌ Error processing {path.name}: {e}", fg=typer.colors.RED
-                )
+                typer.secho(f"❌ Error processing {path.name}: {e}", fg=typer.colors.RED)
 
     try:
         with open(output, "wb") as f:
             writer.write(f)
-        typer.secho(
-            f"\n✅ Combined PDF saved to: {output}", fg=typer.colors.GREEN, bold=True
-        )
+        typer.secho(f"\n✅ Combined PDF saved to: {output}", fg=typer.colors.GREEN, bold=True)
     except Exception as e:
         typer.secho(f"❌ Failed to save output: {e}", fg=typer.colors.RED)
         raise typer.Exit(code=1) from e
