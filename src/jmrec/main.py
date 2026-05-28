@@ -75,26 +75,5 @@ def merge(
         raise typer.Exit(code=1) from e
 
 
-@app.command(
-    context_settings={
-        "allow_extra_args": True,
-        "ignore_unknown_options": True,
-        "help_option_names": [],
-    },
-    help="Raw passthrough to the underlying pandoc binary.",
-)
-def pandoc(ctx: typer.Context):
-    """
-    Run raw pandoc commands inside the container.
-    Example: scripts pandoc --version
-    """
-    cmd = ["pandoc"] + ctx.args
-
-    try:
-        subprocess.run(cmd, shell=False) # noqa: S603
-    except FileNotFoundError:
-        typer.secho("❌ Pandoc binary not found in the container.", fg=typer.colors.RED)
-
-
 if __name__ == "__main__":
     app()
