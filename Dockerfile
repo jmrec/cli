@@ -1,11 +1,13 @@
 FROM python:3.12-alpine AS builder
 WORKDIR /app
-RUN apk add build-base libxml2-dev libxslt-dev libffi-dev
+RUN apk add --no-cache build-base libxml2-dev libxslt-dev libffi-dev
 
-COPY pyproject.toml .
-COPY src/ src/
-
+COPY pyproject.toml README.md ./
+RUN mkdir -p src/jmrec && touch src/jmrec/__init__.py
 RUN pip install --prefix=/install .
+
+COPY src/ src/
+RUN pip install --prefix=/install --no-deps .
 
 FROM python:3.12-alpine
 COPY --from=builder /install /usr/local
