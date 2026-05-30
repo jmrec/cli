@@ -7,13 +7,14 @@ import typer
 from pypdf import PdfWriter
 from rich.traceback import install
 
-from jmrec.commands import canvas, convert, greet
+from jmrec.commands import canvas, convert, greet, monitor
 
 install(show_locals=True)
 app = typer.Typer()
 app.add_typer(greet.app, name="greet", help="Commands related to greetings")
 app.add_typer(convert.app, name="convert", help="Commands related to conversion")
 app.add_typer(canvas.app, name="canvas", help="Commands related to Canvas LMS")
+app.add_typer(monitor.app, name="monitor", help="Commands related to URL monitoring")
 
 
 @app.command()

@@ -13,7 +13,11 @@ dependencies = [
     "html2text",
     "canvasapi",
     "python-dotenv",
-    "textual"
+    "textual",
+    "requests>=2.34.2",
+    "rich>=15.0.0",
+    "pypandoc>=1.17",
+    "ruff>=0.15.14",
 ]
 
 [project.optional-dependencies]
