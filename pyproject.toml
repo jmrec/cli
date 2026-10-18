@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "typer",
     "img2pdf",
+    "pillow",
     "pypdf",
     "tablib",
     "mammoth",
@@ -19,33 +20,30 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    "ruff",
-    "pre-commit",
-]
+dev = ["ruff", "pre-commit"]
 
 [tool.ruff]
 target-version = "py312"
-line-length = 100
+line-length    = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S"]
 ignore = []
 
 [tool.ruff.format]
-quote-style = "double"
+quote-style  = "double"
 indent-style = "space"
 
 [tool.ruff.lint.flake8-bugbear]
 extend-immutable-calls = ["typer.Argument", "typer.Option"]
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires      = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts]
 jmrec-cli = "jmrec.main:app"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
-packages = {find = {where = ["src"]}}
+package-dir = { "" = "src" }
+packages    = { find = { where = ["src"] } }

@@ -7,12 +7,13 @@ import typer
 from pypdf import PdfWriter
 from rich.traceback import install
 
-from jmrec.commands import canvas, convert
+from jmrec.commands import canvas, compress, convert
 from jmrec.commands.setup import setup as setup_command
 
 install(show_locals=True)
 app = typer.Typer()
 app.add_typer(convert.app, name="convert", help="Commands related to conversion")
+app.add_typer(compress.app, name="compress", help="Commands related to compression")
 app.add_typer(canvas.app, name="canvas", help="Commands related to Canvas LMS")
 app.command("setup", help="Download optional external tools such as Pandoc.")(setup_command)
 

@@ -41,6 +41,7 @@ jmrec-cli convert --help
 | `merge` | Convert images to PDF and merge them with existing PDFs, in the order provided. |
 | `convert doc2md` | Convert a `.docx` file to Markdown and extract its embedded media. |
 | `convert csv2json` | Convert CSV files (or directories of CSVs) to minified JSON. |
+| `compress image` | Compress an image to a target file size (e.g. `--target 200KB`). |
 | `canvas explore` | Open the Canvas LMS explorer TUI for courses, assignments, and announcements. |
 
 ### Environment Variables
