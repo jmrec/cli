@@ -5,7 +5,6 @@ from typing import List, cast
 import typer
 from canvasapi import Canvas
 from canvasapi.course import Course
-from dotenv import load_dotenv
 from textual import work
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
@@ -20,18 +19,22 @@ from textual.widgets import (
     Static,
 )
 
+from jmrec.utils import get_env_paths, load_env
+
 app = typer.Typer()
 
 
 def get_canvas():
     """Lazy loader for the Canvas API object."""
-    load_dotenv()
+    load_env()
     url = os.getenv("CANVAS_API_URL")
     key = os.getenv("CANVAS_API_KEY")
 
     if not url or not key:
+        locations = " or ".join(str(path) for path in get_env_paths())
         typer.secho(
-            "Missing Canvas Credentials. Ensure CANVAS_API_URL and CANVAS_API_KEY are set.",
+            "Missing Canvas Credentials. Set CANVAS_API_URL and CANVAS_API_KEY, "
+            f"or add them to {locations}.",
             fg=typer.colors.RED,
             err=True,
         )

@@ -7,7 +7,7 @@ import tablib
 import typer
 from rich.table import Table
 
-from jmrec.utils import console
+from jmrec.utils import console, pandoc_install_hint
 
 app = typer.Typer()
 
@@ -34,8 +34,17 @@ def doc2md(
             fg=typer.colors.GREEN,
         )
         typer.echo(f"📁 Media extracted to '{media_path}/'")
+    except OSError as e:
+        typer.secho(
+            "Pandoc is required for this command but was not found.",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        typer.echo("\tRun `jmrec-cli setup` to download it automatically.")
+        typer.echo(f"\tOr install it manually: {pandoc_install_hint()}")
+        raise typer.Exit(code=1) from e
     except Exception as e:
-        typer.secho(f"❌ Conversion failed: {e}", fg=typer.colors.RED, err=True)
+        typer.secho(f"Conversion failed: {e}", fg=typer.colors.RED, err=True)
         raise typer.Exit(code=1) from e
 
 
@@ -55,7 +64,7 @@ def csv2json(
             files_to_process.append(path)
 
     if not files_to_process:
-        typer.secho("❌ No valid CSV files found.", fg=typer.colors.RED)
+        typer.secho("No valid CSV files found.", fg=typer.colors.RED)
         raise typer.Exit(1)
 
     table = Table(title="Conversion Summary", show_header=True, header_style="bold magenta")
@@ -72,7 +81,7 @@ def csv2json(
                     data = tablib.Dataset().load(f.read(), format="csv")
             except Exception as e:
                 typer.secho(
-                    f"❌ Error reading {csv_path.name}: {type(e).__name__}: {e}",
+                    f"Error reading {csv_path.name}: {type(e).__name__}: {e}",
                     fg=typer.colors.RED,
                     err=True,
                 )
@@ -84,7 +93,7 @@ def csv2json(
                     json.dump(json_obj, f, separators=(",", ":"))
             except Exception as e:
                 typer.secho(
-                    f"❌ Error writing {csv_path.name}: {type(e).__name__}: {e}",
+                    f"Error writing {csv_path.name}: {type(e).__name__}: {e}",
                     fg=typer.colors.RED,
                     err=True,
                 )

@@ -1,18 +1,21 @@
 lint:
-    ruff format .
-    ruff check .
+    uv run ruff format .
+    uv run ruff check .
 
 fix:
-    ruff check --fix .
+    uv run ruff check --fix .
 
-build-compose:
-    docker compose build
+install:
+    uv tool install --from git+https://github.com/jmrec/cli.git jmrec-cli
 
-build:
-    docker build -t jmrec-cli .
+update:
+    uv tool install --force --from git+https://github.com/jmrec/cli.git jmrec-cli
 
-build-linux:
-    docker buildx build --platform linux/amd64 -t ghcr.io/jmrec/cli:latest --push .
+dev:
+    uv tool install --editable . --force
+
+setup:
+    jmrec-cli setup
 
 tree:
     tree -I '.ruff_cache|.venv|__pycache__' --dirsfirst .

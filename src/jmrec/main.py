@@ -8,11 +8,13 @@ from pypdf import PdfWriter
 from rich.traceback import install
 
 from jmrec.commands import canvas, convert
+from jmrec.commands.setup import setup as setup_command
 
 install(show_locals=True)
 app = typer.Typer()
 app.add_typer(convert.app, name="convert", help="Commands related to conversion")
 app.add_typer(canvas.app, name="canvas", help="Commands related to Canvas LMS")
+app.command("setup", help="Download optional external tools such as Pandoc.")(setup_command)
 
 
 @app.command()
@@ -29,13 +31,13 @@ def merge(
     valid_extensions = {".jpg", ".jpeg", ".png", ".tiff", ".bmp", ".gif"}
 
     if not inputs:
-        typer.secho("❌ No input files provided.", fg=typer.colors.RED)
+        typer.secho("No input files provided.", fg=typer.colors.RED)
         raise typer.Exit(code=1)
 
     with typer.progressbar(inputs, label="Processing files") as progress:
         for path in progress:
             if not path.exists():
-                typer.secho(f"⚠️ Skipping: {path} (File not found)", fg=typer.colors.YELLOW)
+                typer.secho(f"Skipping: {path} (File not found)", fg=typer.colors.YELLOW)
                 continue
 
             ext = path.suffix.lower()
@@ -47,7 +49,7 @@ def merge(
                     pdf_bytes = img2pdf.convert(str(path))
                     if pdf_bytes is None:
                         typer.secho(
-                            f"❌ Failed to convert image: {path.name}",
+                            f"Failed to convert image: {path.name}",
                             fg=typer.colors.RED,
                         )
                         continue
@@ -55,18 +57,18 @@ def merge(
                     writer.append(img_pdf_stream)
                 else:
                     typer.secho(
-                        f"⚠️ Skipping: {path} (Unsupported extension)",
+                        f"Skipping: {path} (Unsupported extension)",
                         fg=typer.colors.YELLOW,
                     )
             except Exception as e:
-                typer.secho(f"❌ Error processing {path.name}: {e}", fg=typer.colors.RED)
+                typer.secho(f"Error processing {path.name}: {e}", fg=typer.colors.RED)
 
     try:
         with open(output, "wb") as f:
             writer.write(f)
-        typer.secho(f"\n✅ Combined PDF saved to: {output}", fg=typer.colors.GREEN, bold=True)
+        typer.secho(f"\nCombined PDF saved to: {output}", fg=typer.colors.GREEN, bold=True)
     except Exception as e:
-        typer.secho(f"❌ Failed to save output: {e}", fg=typer.colors.RED)
+        typer.secho(f"Failed to save output: {e}", fg=typer.colors.RED)
         raise typer.Exit(code=1) from e
 
 
