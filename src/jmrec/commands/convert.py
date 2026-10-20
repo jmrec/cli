@@ -30,10 +30,10 @@ def doc2md(
             extra_args=[f"--extract-media={media_path}"],
         )
         typer.secho(
-            f"✅ Converted '{filepath.name}' to '{output_md.name}'",
+            f"Converted '{filepath.name}' to '{output_md.name}'",
             fg=typer.colors.GREEN,
         )
-        typer.echo(f"📁 Media extracted to '{media_path}/'")
+        typer.echo(f"Media extracted to '{media_path}/'")
     except OSError as e:
         typer.secho(
             "Pandoc is required for this command but was not found.",
@@ -109,7 +109,7 @@ def csv2json(
             # typer.secho(f"\nError in {csv_path.name}: {e}", fg=typer.colors.RED)
 
     # typer.secho(
-    #     f"\n✅ Done! Processed {len(files_to_process)} files.",
+    #     f"\nDone! Processed {len(files_to_process)} files.",
     #     fg=typer.colors.GREEN,
     #     bold=True,
     # )

@@ -129,7 +129,7 @@ def image(
     before = source.stat().st_size
     if before <= limit and get_format(source) == fmt:
         out_path.write_bytes(source.read_bytes())
-        console.print(f"[success]✓[/success] {out_path} already fits ({format_size(before)}).")
+        console.print(f"[success]{out_path}[/success] already fits ({format_size(before)}).")
         return
 
     try:
@@ -148,6 +148,6 @@ def image(
     after = out_path.stat().st_size
     detail = f"quality {quality}" if quality else "image optimized"
     console.print(
-        f"[success]✓[/success] {out_path} {format_size(after)} "
-        f"({detail}, {format_size(before)} → {100 - after / before * 100:.0f}% smaller)"
+        f"[success]{out_path}[/success] {format_size(after)} "
+        f"({detail}, {format_size(before)} -> {100 - after / before * 100:.0f}% smaller)"
     )

@@ -221,5 +221,5 @@ def explore():
         CanvasExplorer(courses).run()
 
     except Exception as e:
-        typer.secho(f"❌ Connection Error: {e}", fg="red", err=True)
+        typer.secho(f"Connection Error: {e}", fg="red", err=True)
         raise typer.Exit(1) from e
